@@ -1,0 +1,21 @@
+= Iniciar =
+npm run dev
+
+== Instalar Capacitor ==
+npm install @capacitor/core @capacitor/cli @capacitor/android
+
+== Iniciar Capacitor ==
+npx cap init "Muysca Uque" "org.cubun.numbers" --web-dir dist
+
+
+== Generar Build ==
+npm run build
+
+== Añadir la plataforma Android ==
+npx cap add android
+
+== Sincronizar y Abrir en Android Studio==
+npx cap sync
+npx cap open android
+
+

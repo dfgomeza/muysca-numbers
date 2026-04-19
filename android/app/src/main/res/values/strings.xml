@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Muysca Uque</string>
+    <string name="title_activity_main">Muysca Uque</string>
+    <string name="package_name">org.cubun.numbers</string>
+    <string name="custom_url_scheme">org.cubun.numbers</string>
+</resources>
