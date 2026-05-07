@@ -30,7 +30,7 @@ Crear una experiencia interactiva, lúdica y sonora para que niños desde los 5 
     - **Acierto:** Sonido de celebración suave (flauta/caracol) y el glifo baila.
     - **Error:** El glifo incorrecto vibra sutilmente y se repite el audio: "Inténtalo de nuevo, busca **muyhyca**".
 - **Niveles:** 
-    - Nivel 1: Números 0-5.
+    - Nivel 1: Números 1-5.
     - Nivel 2: Números 6-10.
     - Nivel 3: Números 11-19 (Pies).
 

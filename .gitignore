@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+ # Capacitor / Android
+android/
+ios/
+
+# Si quieres guardar la configuración de Android, ignora solo los archivos temporales:
+android/build/
+android/app/build/
+android/.gradle/
+
+# Archivos de sistema y fuentes
+src/assets/font-glyphs/

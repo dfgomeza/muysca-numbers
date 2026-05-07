@@ -4,17 +4,56 @@ import { translations } from './data/translations'
 import './App.css'
 
 // --- ASSETS LOADERS ---
-const glyphFiles = import.meta.glob('./assets/numbers/*.svg', { query: '?raw', import: 'default', eager: true });
 const illustrationFiles = import.meta.glob('./assets/illustrations/**/*.png', { eager: true });
+const soundFiles = import.meta.glob('./assets/sounds/*.ogg', { eager: true });
+
+// --- UTILS ---
+const playSound = (name) => {
+  const soundPath = `./assets/sounds/${name}.ogg`;
+  const soundModule = soundFiles[soundPath];
+  
+  if (soundModule) {
+    const audioSrc = typeof soundModule === 'string' ? soundModule : soundModule.default;
+    const audio = new Audio(audioSrc);
+    audio.play().catch(e => console.warn("Error playing sound:", e));
+  }
+};
 
 // --- COMPONENTS ---
-const Glyph = ({ num, size = "small" }) => {
-  const svgContent = glyphFiles[`./assets/numbers/${num.glyph}`] || "";
+const MuyscaText = ({ text }) => {
+  if (!text) return null;
+  
+  // Regex para encontrar los caracteres específicos de la fuente (mapeo definitivo)
+  // Cuerpo: a-j (manos), k-s (pies), x, y, z (z=ytu opcional)
+  // Glifos: 0-9, A-K, L (L=0 absoluto)
+  const parts = text.toString().split(/([0-9A-Lxa-syz])/g);
+  
   return (
-    <div 
-      className={`glyph-svg ${num.id >= 11 ? 'foot' : ''} ${size}`}
-      dangerouslySetInnerHTML={{ __html: svgContent }}
-    />
+    <>
+      {parts.map((part, i) => {
+        if (/^[0-9A-Lxa-syz]$/.test(part)) {
+          return (
+            <span key={i} className="muysca-numbers-font" style={{ 
+              fontSize: '1.2em', 
+              verticalAlign: 'middle', 
+              margin: '0 0.1rem',
+              display: 'inline-block'
+            }}>
+              {part}
+            </span>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </>
+  );
+};
+
+const Glyph = ({ num, size = "small" }) => {
+  return (
+    <div className={`glyph-svg ${num.id >= 11 ? 'foot' : ''} ${size} muysca-numbers-font`}>
+      {num.glyph}
+    </div>
   );
 };
 
@@ -22,19 +61,14 @@ const ObjectCounter = ({ count, language }) => {
   const t = translations[language].objects;
   const paths = Object.keys(illustrationFiles);
   
-  // Extraer categorías únicas de las rutas de archivos
   const categories = useMemo(() => {
     return [...new Set(paths.map(p => p.split('/')[3]))].filter(Boolean);
   }, [paths]);
 
-  // Seleccionar una categoría aleatoria pero estable para este renderizado
-  // Podríamos usar el count como semilla si quisiéramos que fuera consistente, 
-  // pero por ahora lo haremos aleatorio cada vez que el componente se monta.
   const selectedCategory = useMemo(() => {
     return categories[Math.floor(Math.random() * categories.length)];
   }, [categories]);
 
-  // Obtener las imágenes de la categoría seleccionada
   const categoryImages = useMemo(() => {
     if (!selectedCategory) return [];
     return paths
@@ -46,7 +80,6 @@ const ObjectCounter = ({ count, language }) => {
       .filter(Boolean);
   }, [selectedCategory, paths]);
 
-  // Generar los ítems a mostrar
   const items = useMemo(() => {
     if (categoryImages.length === 0) return [];
     return Array.from({ length: count }, (_, i) => {
@@ -63,7 +96,7 @@ const ObjectCounter = ({ count, language }) => {
 
   return (
     <div className="object-counter-container">
-      <h3>{count} {selectedCategory}{count !== 1 ? t.suffix : ''}</h3>
+      <h3>{t.format(count, t.names[selectedCategory])}</h3>
       <div className={`objects-territory ${count > 10 ? 'many-items' : 'few-items'}`}>
         {items.map((item, i) => (
           <div key={i} className="object-item-wrapper" style={item.style}>
@@ -95,15 +128,44 @@ const Confetti = ({ language }) => (
 );
 
 const NumberDetail = ({ number, language, onUpdateSelection, t }) => {
+  const [showGlyph, setShowGlyph] = useState(false);
+
+  // Resetear la vista al cambiar de número
+  useEffect(() => {
+    setShowGlyph(false);
+  }, [number?.id]);
+
   if (!number) return null;
+
   return (
     <div className="detail-panel expanded" onClick={e => e.stopPropagation()}>
-      <h2 className="detail-title">{number.name.toUpperCase()}</h2>
+      <div className="detail-header">
+        <div className="detail-title-group">
+          <div className="name-row">
+            <h2 className="detail-title">{number.name.toUpperCase()} {number.lugo_name && <span className="lugo-name">, {number.lugo_name}</span>}</h2>
+            
+          </div>
+          {number.fon && <span className="phonology-aid">{number.fon}</span>}
+        </div>
+        <button className="sound-button" onClick={() => playSound(number.name)}>
+          🔊
+        </button>
+      </div>
       <div className="detail-layout">
         <section className="detail-section symbol-side">
           <div className="detail-glyph-box">
-            <Glyph num={number} size="large" />
+            <div className={`pedagogical-stage ${showGlyph ? 'glyph-view' : 'finger-view'}`}>
+              <span className="muysca-numbers-font detail-main-char">
+                {showGlyph ? number.glyph : number.fingers}
+              </span>
+            </div>
           </div>
+          <button 
+            className="toy-button step-button" 
+            onClick={() => setShowGlyph(!showGlyph)}
+          >
+            {showGlyph ? t.learn.showBody : t.learn.discover}
+          </button>
         </section>
         <section className="detail-section quantity-side">
           <ObjectCounter count={number.count} language={language} />
@@ -132,7 +194,7 @@ function App() {
   });
 
   const getLevelNumbers = () => {
-    if (currentLevel === 1) return muyscaNumbers.filter(n => n.id <= 5);
+    if (currentLevel === 1) return muyscaNumbers.filter(n => n.id >= 1 && n.id <= 5);
     if (currentLevel === 2) return muyscaNumbers.filter(n => n.id >= 6 && n.id <= 10);
     if (currentLevel === 3) return muyscaNumbers.filter(n => n.id >= 11);
     return [];
@@ -140,6 +202,7 @@ function App() {
 
   const startNewRound = () => {
     const levelNumbers = getLevelNumbers();
+    if (levelNumbers.length === 0) return;
     const target = levelNumbers[Math.floor(Math.random() * levelNumbers.length)];
     let options = [target];
     while (options.length < 3) {
@@ -148,6 +211,7 @@ function App() {
     }
     options = options.sort(() => Math.random() - 0.5);
     setGameState(prev => ({ ...prev, target, options, feedback: null }));
+    setTimeout(() => playSound(target.name), 500);
   };
 
   const handleOptionClick = (num) => {
@@ -155,8 +219,11 @@ function App() {
     if (num.id === gameState.target.id) {
       setGameState(prev => ({ ...prev, feedback: 'correct', score: prev.score + 1 }));
       setTimeout(startNewRound, 2500);
+      playSound('celebration'); 
+
     } else {
       setGameState(prev => ({ ...prev, feedback: 'incorrect' }));
+      playSound(gameState.target.name);
       setTimeout(() => setGameState(prev => ({ ...prev, feedback: null })), 800);
     }
   };
@@ -169,9 +236,10 @@ function App() {
     <div className="welcome-screen fade-in">
       <div className="lang-toggle">
         <button onClick={() => setLanguage('es')} className={language === 'es' ? 'active' : ''}>ES</button>
-        <button onClick={() => setLanguage('muy')} className={language === 'muy' ? 'active' : ''}>MUY</button>
+        <button onClick={() => setLanguage('chb')} className={language === 'chb' ? 'active' : ''}>CHB</button>
       </div>
       <h1 className="main-title">{t.welcome.title}</h1>
+      
       <button className="toy-button start-button" onClick={() => setCurrentScreen('level-select')}>
         {t.welcome.start}
       </button>
@@ -203,7 +271,9 @@ function App() {
     <div className="dashboard-screen fade-in">
       <nav className="top-nav">
         <button className="back-button" onClick={() => setCurrentScreen('level-select')}>{t.dashboard.changeLevel}</button>
-        <div className="level-indicator">{t.dashboard.level(currentLevel)}</div>
+        <div className="level-indicator">
+          {t.dashboard.level(currentLevel)}
+        </div>
       </nav>
       <div className="menu-grid">
         <button className="toy-button menu-button learn" onClick={() => setCurrentScreen('learn')}>
@@ -231,7 +301,10 @@ function App() {
               <div 
                 key={num.id} 
                 className={`number-card ${selectedNumber?.id === num.id ? 'selected' : ''}`} 
-                onClick={() => setSelectedNumber(num)}
+                onClick={() => {
+                  setSelectedNumber(num);
+                  playSound(num.name);
+                }}
               >
                 <Glyph num={num} />
                 <span className="card-name">{num.name}</span>
@@ -276,12 +349,17 @@ function App() {
           {gameState.feedback === 'correct' && <Confetti language={language} />}
           <div className="instruction-zone">
             <h2>{t.play.find}</h2>
-            <div className="target-name">{gameState.target.name.toUpperCase()}</div>
+            <div className="target-name-container">
+              <div className="target-name">{gameState.target.name.toUpperCase()}</div>
+              <button className="sound-button" onClick={() => playSound(gameState.target.name)}>
+                🔊
+              </button>
+            </div>
           </div>
           <div className="options-grid">
             {gameState.options.map((option) => (
               <div 
-                key={option.id} 
+                key={option.id}                 
                 className={`option-card ${gameState.feedback === 'correct' && option.id === gameState.target.id ? 'celebrate' : ''} ${gameState.feedback === 'incorrect' ? 'shake' : ''}`}
                 onClick={() => handleOptionClick(option)}
               >
@@ -296,6 +374,24 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Dev Font Preview - Muestra la secuencia completa del mapa definitivo */}
+      {/*}
+      <div className="muysca-numbers-font" style={{ 
+        padding: '1rem', 
+        background: '#fff', 
+        borderBottom: '4px solid var(--primary-teal)',
+        fontSize: '2rem',
+        textAlign: 'center',
+        letterSpacing: '8px',
+        color: 'var(--primary-teal)',
+        zIndex: 10000,
+        position: 'relative',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+      }}>
+        0123456789A BCDEFGHJ KL abcde fghij klmno pqrs xy
+      </div>
+      */}
+
       {currentScreen === 'welcome' && renderWelcome()}
       {currentScreen === 'level-select' && renderLevelSelect()}
       {currentScreen === 'dashboard' && renderDashboard()}

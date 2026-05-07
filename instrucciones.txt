@@ -18,4 +18,23 @@ npx cap add android
 npx cap sync
 npx cap open android
 
+= Build gradel =
+dependencies {
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now part of kotlin-stdlib")
+        }
+    }
+}
+
+== Capacitor Icons ==
+npm install @capacitor/assets --save-dev
+
+npx capacitor-assets generate
+
+
+
 

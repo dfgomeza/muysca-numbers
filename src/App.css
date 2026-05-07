@@ -1,5 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
 
+@font-face {
+  font-family: 'MuyscaNumerals';
+  src: url('./fonts/muyscanumerals-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.muysca-numbers-font {
+  font-family: 'MuyscaNumerals', sans-serif;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 :root {
   --primary-gold: #FFD166;
   --primary-terracotta: #EF476F;
@@ -162,13 +177,17 @@ body {
 .level-3 { background-color: var(--primary-teal); color: white; border-bottom: 8px solid #0d6e8e; }
 
 .back-link {
-  margin-top: 4rem;
+  margin-top: 3rem;
   background: transparent;
   border: 2px solid #ccc;
   padding: 0.8rem 2rem;
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* --- DASHBOARD SCREEN --- */
@@ -177,15 +196,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
 .level-indicator {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--accent-brown);
   background: var(--primary-gold);
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1.5rem;
   border-radius: 30px;
 }
 
@@ -195,7 +213,7 @@ body {
   gap: 3rem;
   width: 90%;
   max-width: 800px;
-  margin-top: 4rem;
+  margin: auto; /* Centrar verticalmente el contenido */
 }
 
 .menu-button {
@@ -214,24 +232,42 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 3rem;
+  padding: 1rem 2rem;
   background: white;
   box-shadow: var(--soft-shadow);
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .back-button {
   background: white;
   border: 3px solid #eee;
-  padding: 0.8rem 2rem;
+  padding: 0.6rem 1.5rem;
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-main);
+  font-family: inherit;
 }
+
+.back-button:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
 
 .number-card {
   background: white;
   border-radius: 40px;
-  padding: 2.5rem;
+  padding: 1rem;
+  padding-bottom: 2rem;
+  padding-top: 2rem;
   border: 4px solid #f0e6d2;
   transition: 0.2s;
   cursor: pointer;
@@ -239,7 +275,17 @@ body {
 
 .number-card:hover { transform: translateY(-10px); border-color: var(--primary-gold); }
 
-.glyph-svg svg { width: 100%; height: 100%; stroke-width: 8; }
+.glyph-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glyph-svg.small { font-size: 3rem; }
+.glyph-svg.medium { font-size: 8rem; }
+.glyph-svg.large { font-size: 12rem; }
+.glyph-svg.foot { color: var(--foot-blue); }
+
 .card-name { font-size: 1.8rem; font-weight: 700; display: block; margin-top: 1rem; color: var(--accent-brown); }
 
 /* --- LEARN SCREEN SPLIT VIEW --- */
@@ -456,25 +502,47 @@ body {
 
   .top-nav {
     padding: 0.8rem 1rem;
-    height: 60px;
+    min-height: 60px;
+    height: auto;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
   }
 
   .top-nav h2 {
     font-size: 1rem;
     margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 50%;
+    white-space: normal; /* Permitir que el texto respire si es necesario */
+    max-width: 60%;
+    line-height: 1.2;
+    text-align: right;
   }
 
-  .back-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+  .back-button, .back-link {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-main);
+    background-color: white;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .back-link {
+    margin-top: 2rem;
+    background: transparent;
+  }
+
+  .level-indicator, .score-badge {
+    font-size: 1rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
   }
 
   .numbers-grid {
@@ -571,7 +639,17 @@ body {
 
   .play-screen .target-name {
     font-size: 2rem;
-    margin: 0.5rem 0;
+    margin: 0;
+  }
+
+  .lugo-name {
+    font-size: 1rem;
+  }
+
+  .sound-button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
   }
 
   .options-grid {
@@ -619,6 +697,35 @@ body {
   line-height: 1.1;
   max-width: 90vw;
   text-transform: uppercase;
+}
+
+.target-name-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.sound-button {
+  background: white;
+  border: 4px solid var(--primary-gold);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 4px 0 var(--primary-gold);
+  border-bottom-width: 6px;
+}
+
+.sound-button:active {
+  transform: translateY(4px);
+  border-bottom-width: 2px;
 }
 
 .options-grid {
@@ -669,11 +776,47 @@ body {
   width: 90%;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.detail-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.lugo-name {
+  font-size: 1.5rem;
+  color: var(--accent-brown);
+  opacity: 0.6;
+  font-weight: 600;
+}
+
+.phonology-aid {
+  font-size: 1.2rem;
+  color: var(--accent-brown);
+  opacity: 0.7;
+  font-family: 'serif';
+  font-style: italic;
+  margin-top: -0.2rem;
 }
 
 .detail-title {
   font-size: 3rem;
-  margin-top: 0;
+  margin: 0;
   color: var(--accent-brown);
   letter-spacing: 2px;
 }
@@ -692,12 +835,14 @@ body {
   justify-content: center;
   padding: 1.5rem;
   border-radius: 40px;
+  box-sizing: border-box;
 }
 
 .symbol-side {
+  /* 
   background: #fdfaf5;
   border: 4px solid #f0e6d2;
-  width: 100%;
+  */
 }
 
 .detail-glyph-box {
@@ -708,8 +853,39 @@ body {
   align-items: center;
   justify-content: center;
   margin-bottom: 0;
-  color: var(--primary-gold);
+  color: var(--primary-teal);
 }
+
+.pedagogical-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.detail-main-char {
+  font-size: 18rem;
+  line-height: 1;
+}
+
+.step-button {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  background-color: var(--primary-teal);
+  color: white;
+  border-bottom: 5px solid #0d6e8e;
+  width: 100%;
+}
+
+.step-button:active {
+  background-color: #0d6e8e;
+}
+
+.glyph-view { color: var(--primary-terracotta); }
+.finger-view { color: var(--primary-teal); }
 
 .detail-name-tag {
   font-size: 2.5rem;
@@ -850,3 +1026,90 @@ body {
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-15px); } 75% { transform: translateX(15px); } }
 
 .foot-indicator { font-size: 3rem; background: #e3f2fd; padding: 1rem 3rem; border-radius: 30px; border-bottom: 6px solid #bbdefb; }
+
+/* --- RESPONSIVE MODAL (Mobile/Small Screens) --- */
+@media (max-width: 900px) {
+  .detail-panel {
+    padding: 1.5rem;
+    max-height: 95vh;
+    overflow-y: auto;
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detail-header {
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .detail-title {
+    font-size: 2rem;
+  }
+
+  .lugo-name {
+    font-size: 1.2rem;
+  }
+
+  .phonology-aid {
+    font-size: 1rem;
+  }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .detail-section {
+    padding: 0;
+    border-radius: 25px;
+  }
+
+  .detail-main-char {
+    font-size: 20rem;
+  }
+
+  .detail-glyph-box {
+    max-width: 180px;
+  }
+
+  .step-button {
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .quantity-side {
+    min-height: auto;
+    padding-bottom: 2rem;
+  }
+
+  .object-counter-container h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .objects-territory {
+    gap: 8px;
+    padding: 0.5rem;
+  }
+
+  .few-items .object-item-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .many-items .object-item-wrapper {
+    width: 45px;
+    height: 45px;
+  }
+
+  .close-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+  }
+}

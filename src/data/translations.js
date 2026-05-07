@@ -6,7 +6,7 @@ export const translations = {
     },
     levelSelect: {
       title: "¿Qué números quieres aprender hoy?",
-      level1: "DEL 0 AL 5",
+      level1: "DEL 1 AL 5",
       level2: "DEL 6 AL 10",
       level3: "DEL 11 AL 19",
       back: "Atrás"
@@ -21,7 +21,9 @@ export const translations = {
       menu: "🏠 Menú",
       title: (val) => `Aprendiendo el Nivel ${val}`,
       close: "Cerrar",
-      selectPrompt: "Selecciona un número para aprender"
+      selectPrompt: "Selecciona un número para aprender",
+      discover: "Ver ícono ✨",
+      showBody: "Ver dedos 🖐️👣"
     },
     play: {
       menu: "🏠 Menú",
@@ -30,16 +32,24 @@ export const translations = {
     },
     objects: {
       empty: "El vacío (Ytu)",
-      suffix: "es" 
+      names: {
+        comba: { s: "jaguar", p: "jaguares" },
+        fuquy: { s: "curí", p: "curíes" },
+        guahagui: { s: "venado", p: "venados" },
+        quye: { s: "árbol", p: "árboles" },
+        quynza: { s: "colibrí", p: "colibríes" },
+        sumne: { s: "pato", p: "patos" }
+      },
+      format: (count, name) => `${count} ${count === 1 ? name.s : name.p}`
     }
   },
-  muy: {
+  chb: {
     welcome: {
-      title: "Muysca Uque",
+      title: "Gytygo",
       start: "¡Chisieca! 🚀"
     },
     levelSelect: {
-      title: "¿Ipqua mucango maguisca?",
+      title: "Ipqua mucango maguisca",
       level1: "ata - hyzca",
       level2: "taa - ugchihica",
       level3: "quihicha ata - quihicha aca",
@@ -55,16 +65,26 @@ export const translations = {
       menu: "🏠 Gue",
       title: (val) => `Gata ${val}z mucansuca`,
       close: "Gucu",
-      selectPrompt: "¡Uque ata azo!"
+      selectPrompt: "¡Uque ata azo!",
+      discover: "Bes uqueo ✨",
+      showBody: "Ytubas quihichubasa 🖐️👣"
     },
     play: {
       menu: "🏠 Gue",
-      find: "¿Bes uqueo?",
+      find: "Bes uqueo",
       wellDone: "¡Hata choin! 🎉"
     },
     objects: {
       empty: "Ytu",
-      suffix: "" 
+      names: {
+        comba: "comba",
+        fuquy: "fuquy",
+        guahagui: "guahagui",
+        quye: "quye",
+        quynza: "quynza",
+        sumne: "sumne"
+      },
+      format: (count, name) => `${name} ${count}`
     }
   }
 };
